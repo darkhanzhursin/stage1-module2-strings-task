@@ -1,11 +1,8 @@
 package com.epam.mjc;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.StringTokenizer;
-
-import static java.util.Arrays.asList;
 
 public class MethodParser {
 
