@@ -1,5 +1,12 @@
 package com.epam.mjc;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.StringTokenizer;
+
+import static java.util.Arrays.asList;
+
 public class MethodParser {
 
     /**
@@ -19,7 +26,46 @@ public class MethodParser {
      * @param signatureString source string to parse
      * @return {@link MethodSignature} object filled with parsed values from source string
      */
+
+    MethodSignature methodSignature;
+    List<MethodSignature.Argument> arguments = new ArrayList<>();
     public MethodSignature parseFunction(String signatureString) {
-        throw new UnsupportedOperationException("You should implement this method.");
+        int openIndex = signatureString.indexOf("(");
+
+        String tillArgs = signatureString.substring(0, openIndex);
+        StringTokenizer tokenizer = new StringTokenizer(tillArgs, " ");
+        int countTokens = tokenizer.countTokens();
+        List<String> stringList = List.of(tillArgs.split(" "));
+
+        String splitArgs = signatureString.substring(openIndex+1);
+        List<String> args = List.of(splitArgs.split("[(),]+"));
+
+        if (!args.isEmpty()) {
+            for (int i = 0; i < args.size(); i++) {
+                String eachArgsLine = args.get(i).trim();
+                String[] subArgs = eachArgsLine.split(" ");
+                arguments.add(new MethodSignature.Argument(subArgs[0].trim(),
+                    subArgs[1].trim()));
+            }
+            if (countTokens > 2) {
+                methodSignature = new MethodSignature(stringList.get(2), arguments);
+                methodSignature.setReturnType(stringList.get(1));
+                methodSignature.setAccessModifier(stringList.get(0));
+            } else {
+                methodSignature = new MethodSignature(stringList.get(1), arguments);
+                methodSignature.setReturnType(stringList.get(0));
+            }
+        } else {
+            if (countTokens > 2) {
+                methodSignature = new MethodSignature(stringList.get(2));
+                methodSignature.setReturnType(stringList.get(1));
+                methodSignature.setAccessModifier(stringList.get(0));
+            } else {
+                methodSignature = new MethodSignature(stringList.get(1));
+                methodSignature.setReturnType(stringList.get(0));
+            }
+        }
+
+        return methodSignature;
     }
 }
